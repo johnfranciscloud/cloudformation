@@ -18,10 +18,16 @@ To address these issues, the following changes were made in the code:
     Denies unencrypted object uploads to the bucket. This policy statement ensures that all objects uploaded to the bucket are encrypted with server-side encryption.
   - DenyInsecureConnections: 
     Denies insecure connections to the bucket. This policy statement ensures that all connections to the bucket are made over secure channels.
+  - Condition (Source VPC Endpoint):
+    Condition ensures that only requests originating from the specified VPC endpoint are allowed to retrieve objects from the S3 bucket.This policy statement ensures that all the request originates from the specified VPC endpoint
+    
 - Logs:
   Access logs for the S3 bucket are enabled and directed to the a specific bucket. The logs are prefixed with s3-access-logs/.
+
 - Bucket Encryption:
   The BucketEncryption property of the MyS3Bucket resource configures server-side encryption with AES256 algorithm. This ensures that objects stored in the S3 bucket are encrypted at rest, enhancing data security.
+  
 - Public Access Block:
   The PublicAccessBlockConfiguration property of the MyS3Bucket resource is set to block public access to the bucket. This ensures that the S3 bucket does not allow any public access, thereby preventing unauthorized access to objects stored within the bucket.
+
 

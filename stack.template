@@ -8,6 +8,15 @@ Parameters:
     AllowedPattern: (?=^.{3,63}$)^[a-z0-9][a-z0-9-]*[a-z0-9]
     ConstraintDescription: Name must begin and end with a letter or number and consist only of lowercase letters, numbers, and hyphens (-).
 
+  S3VpceId:
+    Type: String
+    Description: This ID of VPC endpoint isused to restrict access to the Bucket only from the end point.
+
+  LockConfigurationRetentionDays:
+    Type: String
+    Description: The number of days that you want to specify for the default retention period. 
+
+
 Resources:
   MyS3Bucket:
     Type: AWS::S3::Bucket
@@ -28,7 +37,7 @@ Resources:
         Rule:
           DefaultRetention:
             Mode: COMPLIANCE
-            Days: 30        
+            Days: !Ref LockConfigurationRetentionDays        
       PublicAccessBlockConfiguration:
         BlockPublicAcls: true
         IgnorePublicAcls: true
