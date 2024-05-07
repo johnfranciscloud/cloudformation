@@ -55,4 +55,8 @@ Resources:
             Resource: !Sub 'arn:aws:s3:::${BucketName}-s3/*'
             Condition:
               Bool:
-                'aws:SecureTransport': false             
+                'aws:SecureTransport': false                
+Outputs:
+  BucketARN:
+    Description: The arn for the bucket that got created
+    Value: !GetAtt MyS3Bucket.Arn
