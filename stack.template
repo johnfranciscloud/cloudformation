@@ -39,7 +39,22 @@ Resources:
     Properties:
       Bucket: !Sub ${BucketName}-s3
       PolicyDocument:
+        Version: 2012-10-17
         Statement:
+          - Action:
+              - 's3:GetObject'
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref MyS3Bucket
+                - /*
+            Principal:
+              AWS: 
+                - !Sub 'arn:aws:iam::${AWS::AccountId}:root'
+            Condition:
+              StringEquals:
+                'aws:SourceVpce': ${S3VpceId}
           - Sid: DenyUnEncryptedObjectUploads
             Effect: Deny
             Principal: '*'

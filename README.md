@@ -1,7 +1,9 @@
 # Cloudformation assignment
 
 
-The CFN-Nag flagged three warnings in the CF template:
+The cfn-nag flagged three warnings in the CF template:
+
+![cfn-nag](Images/cfn-nag-warnings.png) 
 
 - The bucket lacks a Bucket Policy.
 - Encryption for the bucket is not enabled.
@@ -22,3 +24,4 @@ To address these issues, the following changes were made in the code:
   The BucketEncryption property of the MyS3Bucket resource configures server-side encryption with AES256 algorithm. This ensures that objects stored in the S3 bucket are encrypted at rest, enhancing data security.
 - Public Access Block:
   The PublicAccessBlockConfiguration property of the MyS3Bucket resource is set to block public access to the bucket. This ensures that the S3 bucket does not allow any public access, thereby preventing unauthorized access to objects stored within the bucket.
+
