@@ -1,48 +1,24 @@
 # Cloudformation assignment
 
-Welcome to the Cloudformation assignment. In this assignment we kindly ask you to add additional security features to an existing cloudformation stack.
-To be independent of any AWS accounts, we've prepared a docker-compose configuration that will start the [localstack](https://github.com/localstack) AWS cloud stack on your machine. 
 
-Please see the usage section on how to authenticate.
+The CFN-Nag flagged three warnings in the CF template:
 
-# Assignment
+- The bucket lacks a Bucket Policy.
+- Encryption for the bucket is not enabled.
+- Access logs are not enabled.
 
-The current, basic cloudformation template doesn't contain any additional security featuress/configurations. Please have a look at the cfn-nag report. There are a couple of findings which have to be fixed. Please extend the cloudformation template accordingly.
 
-# Usage
+To address these issues, the following changes were made in the code:
 
-## Start localstack
-
-```shell
-docker-compose up
-```
-
-Watch the logs for `Execution of "preload_services" took 986.95ms`
-
-## Authentication
-```shell
-export AWS_ACCESS_KEY_ID=foobar
-export AWS_SECRET_ACCESS_KEY=foobar
-export AWS_REGION=eu-central-1
-```
-
-## AWS CLI examples
-### S3
-```shell
-aws --endpoint-url http://localhost:4566 s3api list-buckets
-```
-
-## Create Stack
-```shell
-aws --endpoint-url http://localhost:4566 cloudformation create-stack --stack-name <STACK_NAME> --template-body file://stack.template --parameters ParameterKey=BucketName,ParameterValue=<BUCKET_NAME>
-```
-
-## CFN-NAG Report
-### Show last report
-```shell
-docker logs cfn-nag
-```
-### Recreate report
-```shell
-docker-compose restart cfn-nag
-```
+- Bucket Policy:
+  The BucketPolicy resource applies a policy to the S3 bucket (MyS3Bucket) to enforce additional security controls:
+  - DenyUnEncryptedObjectUploads: 
+    Denies unencrypted object uploads to the bucket. This policy statement ensures that all objects uploaded to the bucket are encrypted with server-side encryption.
+  - DenyInsecureConnections: 
+    Denies insecure connections to the bucket. This policy statement ensures that all connections to the bucket are made over secure channels.
+- Logs:
+  Access logs for the S3 bucket are enabled and directed to the a specific bucket. The logs are prefixed with s3-access-logs/.
+- Bucket Encryption:
+  The BucketEncryption property of the MyS3Bucket resource configures server-side encryption with AES256 algorithm. This ensures that objects stored in the S3 bucket are encrypted at rest, enhancing data security.
+- Public Access Block:
+  The PublicAccessBlockConfiguration property of the MyS3Bucket resource is set to block public access to the bucket. This ensures that the S3 bucket does not allow any public access, thereby preventing unauthorized access to objects stored within the bucket.
