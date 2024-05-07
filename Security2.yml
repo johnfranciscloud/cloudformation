@@ -1,0 +1,53 @@
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      LoggingConfiguration:
+        DestinationBucketName: YourLoggingBucket
+        LogFilePrefix: s3-access-logs/
+      VersioningConfiguration:
+        Status: Enabled
+      ObjectLockConfiguration:
+        ObjectLockEnabled: Enabled
+        Rule:
+          DefaultRetention:
+            Mode: COMPLIANCE
+            Days: 30
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: true
+        RestrictPublicBuckets: true
+      BucketPolicy:
+        Type: AWS::S3::BucketPolicy
+        Properties:
+          Bucket: !Ref MyS3Bucket
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: DenyUnEncryptedObjectUploads
+                Effect: Deny
+                Principal: '*'
+                Action: 's3:PutObject'
+                Resource: !Sub 'arn:aws:s3:::${MyS3Bucket}/*'
+                Condition:
+                  StringNotEquals:
+                    's3:x-amz-server-side-encryption': 'AES256'
+              - Sid: DenyInsecureConnections
+                Effect: Deny
+                Principal: '*'
+                Action: 's3:*'
+                Resource: !Sub 'arn:aws:s3:::${MyS3Bucket}/*'
+                Condition:
+                  Bool:
+                    'aws:SecureTransport': false
+      BucketMfaDelete:
+        Type: AWS::S3::Bucket
+        Properties:
+          Bucket: !Ref MyS3Bucket
+          MfaDelete: Enabled
